@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlockBuddy</title>
+  <style>
+    body {
+      min-width: 200px;
+    }
+
+    .main {
+      text-align: center;
+      font-family: 'Arial', sans-serif;
+      color: #495057;
+      padding: 20px;
+    }
+
+    hr {
+      margin: 15px 0;
+    }
+
+    .toggle-btn {
+      background-color: #28a745;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
+    #logo {
+      max-width: 100px;
+    }
+  </style>
+</head>
+<body>
+  <div class="main">
+    <img src="./icon128.png" alt="BlockBuddy Logo" id="logo">
+    <h1>BlockBuddy</h1>
+    <hr />
+    <span>
+      Current Blocked Sites:
+      <span style="color: #ff0100;">Youtube</span>
+      |
+      <span style="color: #0e8ef2;">Facebook</span>
+      |
+      <span style="color: #e50914;">Netflix</span>
+    </span>
+    <hr />
+    <button class="toggle-btn" id="toggleBtn">Toggle Mode</button>
+  </div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

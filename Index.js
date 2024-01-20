@@ -1,31 +1,43 @@
 const generateHTML = (pageName) => {
-  // Create a temporary URL object to extract the hostname
   const tempUrl = new URL(`http://${pageName}`);
-  // Extract the hostname, remove "www." and ".com", and convert to lowercase
   const siteName = tempUrl.hostname
     .replace(/^www\./, "")
     .replace(/\..*$/, "")
     .toLowerCase();
-  // Capitalize the first letter of the site name
   const capitalizedSiteName =
     siteName.charAt(0).toUpperCase() + siteName.slice(1);
 
   return `
-      <div class='c'>
-          <div class='_404'>404</div>
-          <hr>
-          <div class='_1'>GET BACK TO WORK</div>
-          <div class='_2'> No time for ${capitalizedSiteName}</div>
-      </div>
-    `;
+    <div class='c' data-blocking-html>
+        <div class='_stop'>STOP</div>
+        <hr>
+        <div class='_1'>GET BACK TO WORK</div>
+    <div class='_2'> No time for ${capitalizedSiteName}</div>
+</div>
+  `;
 };
 
 const blockedSites = ["www.youtube.com", "www.netflix.com", "www.facebook.com"];
-
 const currentHostname = window.location.hostname;
 
-if (blockedSites.includes(currentHostname)) {
+// Primarily for retrieving stored data for persisting settings or user preferences across sessions.
+chrome.storage.sync.get("blockMode", function (data) {
+  const isBlocked = data.blockMode !== undefined ? data.blockMode : true;
+  updateBlockedSites(isBlocked);
+});
+
+// Listens for communication between different components of the extension
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.blockMode !== undefined) {
+    const isBlocked = request.blockMode;
+    updateBlockedSites(isBlocked);
+  }
+});
+
+function applyBlockingLogic() {
   const style = document.createElement("style");
+  style.setAttribute("data-blocking-styles", "");
+
   style.innerHTML = `
       body {
         display: flex;
@@ -42,7 +54,7 @@ if (blockedSites.includes(currentHostname)) {
         color: #495057;
       }
   
-      ._404 {
+      ._stop {
         font-size: 6em;
         font-weight: bold;
         color: #dc3545;
@@ -60,5 +72,38 @@ if (blockedSites.includes(currentHostname)) {
     `;
 
   document.head.appendChild(style);
+
   document.body.innerHTML = generateHTML(currentHostname.toUpperCase());
+}
+
+// TO DO: Fix the bug when switching back from focus to surf mode
+// Current fix is to add a reload - not ideal
+
+function removeBlockingLogic() {
+  const blockingElement = document.body.querySelector(".c[data-blocking-html]");
+
+  if (blockingElement) {
+    blockingElement.remove();
+    location.reload();
+  }
+
+  const blockingStyles = document.head.querySelector(
+    "style[data-blocking-styles]"
+  );
+
+  if (blockingStyles) {
+    blockingStyles.remove();
+  }
+
+  console.log(
+    "Blocking logic removed. Users can now use their browsers as usual."
+  );
+}
+
+function updateBlockedSites(isBlocked) {
+  if (isBlocked && blockedSites.includes(currentHostname)) {
+    applyBlockingLogic();
+  } else {
+    removeBlockingLogic();
+  }
 }
