@@ -100,10 +100,15 @@ function removeBlockingLogic() {
   );
 }
 
+// TODO: Fix logic. Add recently blocked site into blockedSites array
 function updateBlockedSites(isBlocked) {
+  //   chrome.storage.sync.get("blockedSites", function (data) {
+  //     const blockedSites = data.blockedSites || []; // If blockedSites is undefined, use an empty array
+
   if (isBlocked && blockedSites.includes(currentHostname)) {
     applyBlockingLogic();
   } else {
     removeBlockingLogic();
   }
+  //   });
 }
