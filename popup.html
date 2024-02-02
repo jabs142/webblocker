@@ -4,50 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>BlockBuddy</title>
-  <style>
-    body {
-      min-width: 200px;
-    }
+  <link rel="stylesheet" href="popup.css">
 
-    .main {
-      text-align: center;
-      font-family: 'Arial', sans-serif;
-      color: #495057;
-      padding: 20px;
-    }
-
-    hr {
-      margin: 15px 0;
-    }
-
-    .toggle-btn {
-      background-color: #28a745;
-      color: white;
-      padding: 8px 16px;
-      border: none;
-      border-radius: 4px;
-      cursor: pointer;
-    }
-
-    #logo {
-      max-width: 100px;
-    }
-
-    #siteInfo {
-      margin-top: 15px;
-      color: #495057;
-    }
-
-    #blockButton {
-      background-color: #E1ECF0;
-      color: #495057;
-      padding: 8px 16px;
-      margin-top: 5px;
-      border: none;
-      border-radius: 20px;
-      cursor: pointer;
-    }
-  </style>
 </head>
 <body>
   <div class="main">
@@ -67,6 +25,9 @@
     <hr />
     <button class="toggle-btn" id="toggleBtn">Toggle Mode</button>
   </div>
+  <button class="toggle-mode" id="toggleModeBtn">
+    <img id="modeIcon" src="./bright-mode.png" alt="Mode Icon">
+  </button>
 
   <script src="popup.js"></script>
 </body>

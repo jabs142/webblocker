@@ -1,0 +1,71 @@
+body {
+  min-width: 200px;
+  transition: background-color 0.3s ease;
+}
+
+body.dark-mode {
+  background-color: #4c5661 !important;
+  color: #ffffff !important;
+}
+
+body.dark-mode .main {
+  color: #ffffff !important;
+}
+
+body.dark-mode #siteInfo {
+  color: #ffffff !important;
+}
+
+.main {
+  text-align: center;
+  font-family: "Arial", sans-serif;
+  color: #495057;
+  padding: 20px;
+}
+
+hr {
+  margin: 15px 0;
+}
+
+.toggle-btn {
+  background-color: #28a745;
+  color: white;
+  padding: 8px 16px;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.toggle-mode {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+}
+
+#logo {
+  max-width: 100px;
+  border-radius: 10px;
+}
+
+#modeIcon {
+  max-width: 20px;
+}
+
+#siteInfo {
+  margin-top: 15px;
+  color: #495057;
+}
+
+#blockButton {
+  background-color: #e1ecf0;
+  color: #495057;
+  padding: 8px 16px;
+  margin-top: 5px;
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+}
