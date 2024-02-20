@@ -36,7 +36,7 @@ hr {
   cursor: pointer;
 }
 
-.toggle-mode {
+.theme-toggle-mode {
   position: absolute;
   top: 10px;
   right: 10px;
@@ -46,12 +46,28 @@ hr {
   outline: none;
 }
 
+.blockList {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  cursor: pointer;
+  background: none;
+  border: none;
+  outline: none;
+  width: 10px;
+  height: 10px;
+}
+
+#blockListIcon {
+  max-width: 20px;
+}
+
 #logo {
   max-width: 100px;
   border-radius: 10px;
 }
 
-#modeIcon {
+#themeIcon {
   max-width: 20px;
 }
 

@@ -15,6 +15,3 @@ The Website Blocker Chrome Extension is a tool that empowers users to control th
 
 - Timer Feature: Implement a timer feature. Only when the timer reaches zero can you exit the block mode and switch back to surf mode.
 - Customizations for Block Buddy: Introduce additional character customizations for Block Buddy, making the blocking experience more enjoyable.
-
-
-#### Video Demo:  URL [HERE](https://drive.google.com/file/d/117E-EXB-VjpUURpN1NVKbapP9tlWaFdT/view?usp=sharing)

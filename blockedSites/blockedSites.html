@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Blocked Sites</title>
+    <link rel="stylesheet" href="../popup.css" />
+  </head>
+  <body>
+    <div class="main">
+      <img src="../images/icon128.png" alt="BlockBuddy Logo" id="logo" />
+
+      <h1>Blocked Sites</h1>
+      <ul>
+        <li>www.youtube.com</li>
+        <li>www.facebook.com</li>
+        <li>www.netflix.com</li>
+      </ul>
+    </div>
+    <button class="theme-toggle-mode" id="toggleModeBtn">
+      <img
+        id="themeIcon"
+        src="../images/bright-mode.png"
+        alt="Theme Toggle Button"
+        title="Toggle between dark and light mode"
+      />
+    </button>
+    <button class="blockList" id="blockListBtn">
+      <img
+        id="blockListIcon"
+        src="../images/block.png"
+        alt="Block List Button"
+        title="Add site to block list"
+      />
+    </button>
+    <script src="blockedSites.js"></script>
+  </body>
+</html>

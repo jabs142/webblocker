@@ -3,7 +3,14 @@ document.addEventListener("DOMContentLoaded", function () {
   const siteInfo = document.getElementById("siteInfo");
   const blockButton = document.getElementById("blockButton");
   const toggleModeBtn = document.getElementById("toggleModeBtn");
-  const modeIcon = document.getElementById("modeIcon");
+  const themeIcon = document.getElementById("themeIcon");
+  const blockListButton = document.getElementById("blockListBtn");
+
+  // Add a click event listener to the button
+  blockListButton.addEventListener("click", function () {
+    // Redirect to the desired HTML page
+    window.location.href = "./blockedSites/blockedSites.html";
+  });
 
   // Retrieve the current mode from storage only once when the DOM is loaded
   chrome.storage.sync.get(
@@ -109,10 +116,10 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateDarkMode(isDarkMode) {
     if (isDarkMode) {
       document.body.classList.add("dark-mode");
-      modeIcon.src = "night-mode.png";
+      themeIcon.src = "./images/night-mode.png";
     } else {
       document.body.classList.remove("dark-mode");
-      modeIcon.src = "bright-mode.png";
+      themeIcon.src = "./images/bright-mode.png";
     }
   }
 });
