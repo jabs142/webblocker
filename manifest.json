@@ -1,24 +1,31 @@
 {
-    "manifest_version": 3,
-    "name": "Procrastination Blocker",
-    "version": "0.1.2",
-    "permissions": [
-      "storage",
-      "activeTab"
-    ],
-    "action": {
-      "default_popup": "popup.html",
-      "default_icon": {
-        "48": "./images/icon48.png",
-        "128": "./images/icon128.png"
-      }
-    },
-    "content_scripts": [
-      {
-        "matches": ["<all_urls>"],
-        "js": ["index.js"]
-      }
-    ],
-    "host_permissions": ["<all_urls>"]
-  }
-  
+  "manifest_version": 3,
+  "name": "Procrastination Blocker",
+  "version": "0.1.2",
+  "permissions": [
+    "storage",
+    "activeTab",
+    "webRequest",
+    "webRequestBlocking",
+    "https://*/*",
+    "http://*/*"
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "48": "./images/icon48.png",
+      "128": "./images/icon128.png"
+    }
+  },
+  "background": {
+    "scripts": ["popup.js"],
+    "persistent": false
+  },
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["content.js"]
+    }
+  ],
+  "host_permissions": ["<all_urls>"]
+}

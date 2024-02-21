@@ -17,7 +17,14 @@ const generateHTML = (pageName) => {
   `;
 };
 
-const blockedSites = ["www.youtube.com", "www.netflix.com", "www.facebook.com"];
+let blockedSites = [
+  "www.youtube.com",
+  "www.netflix.com",
+  "www.facebook.com",
+  "www.github.com",
+];
+
+console.log("blocked sites array", blockedSites);
 const currentHostname = window.location.hostname;
 
 // Primarily for retrieving stored data for persisting settings or user preferences across sessions.
@@ -102,6 +109,7 @@ function removeBlockingLogic() {
 
 // TODO: Fix logic. Add recently blocked site into blockedSites array
 function updateBlockedSites(isBlocked, blockedSites) {
+  console.log("updateBlockedSites", blockedSites);
   //   chrome.storage.sync.get("blockedSites", function (data) {
   //     const blockedSites = data.blockedSites || []; // If blockedSites is undefined, use an empty array
 

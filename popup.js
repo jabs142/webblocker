@@ -1,3 +1,5 @@
+console.log("Popup.js is running");
+
 document.addEventListener("DOMContentLoaded", function () {
   const toggleBtn = document.getElementById("toggleBtn");
   const siteInfo = document.getElementById("siteInfo");
@@ -26,6 +28,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // Toggle the blocked mode on click
       toggleBtn.addEventListener("click", function () {
         isBlocked = !isBlocked;
+        console.log("isBlocked?", isBlocked);
 
         // Update the storage with the new mode
         chrome.storage.sync.set({ blockMode: isBlocked });
