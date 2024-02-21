@@ -1,16 +1,26 @@
 document.addEventListener("DOMContentLoaded", function () {
   const blockListButton = document.getElementById("blockListBtn");
   const blockList = document.getElementById("blockList");
+  const toggleDarkModeBtn = document.getElementById("toggleModeBtn");
 
-  // Add a click event listener to the button
+  // Add a click event listener to the button and redirect to popup page
   blockListButton.addEventListener("click", function () {
-    // Redirect to the desired HTML page
     window.location.href = "../popup.html";
   });
 
   // Fetch the list of blocked sites from Chrome storage
-  chrome.storage.sync.get("blockedSites", function (data) {
+  chrome.storage.sync.get(["blockMode", "darkMode"], function (data) {
     const blockedSites = data.blockedSites || [];
+    let isDarkMode = data.darkMode !== undefined ? data.darkMode : false;
+
+    updateDarkMode(isDarkMode);
+
+    // Toggle dark mode on click
+    toggleDarkModeBtn.addEventListener("click", function () {
+      isDarkMode = !isDarkMode;
+      chrome.storage.sync.set({ darkMode: isDarkMode });
+      updateDarkMode(isDarkMode);
+    });
 
     // Check if there are blocked sites
     if (blockedSites.length > 0) {
@@ -57,7 +67,18 @@ document.addEventListener("DOMContentLoaded", function () {
       blockList.appendChild(ul);
     } else {
       // If there are no blocked sites, display a message
-      blockList.innerHTML = "<p>No sites are currently blocked.</p>";
+      blockList.innerHTML =
+        "<p style='color: grey'>No sites are currently blocked.</p>";
     }
   });
+
+  function updateDarkMode(isDarkMode) {
+    if (isDarkMode) {
+      document.body.classList.add("dark-mode");
+      themeIcon.src = "../images/night-mode.png";
+    } else {
+      document.body.classList.remove("dark-mode");
+      themeIcon.src = "../images/bright-mode.png";
+    }
+  }
 });
