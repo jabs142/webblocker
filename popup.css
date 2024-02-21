@@ -46,7 +46,7 @@ hr {
   outline: none;
 }
 
-.blockList {
+.blockListBtn {
   position: absolute;
   top: 10px;
   left: 10px;
@@ -84,4 +84,57 @@ hr {
   border: none;
   border-radius: 20px;
   cursor: pointer;
+}
+
+#blockList {
+  list-style: none;
+  padding: 0;
+  border: 1px solid #e1ecf0;
+  border-radius: 10px;
+  overflow: hidden;
+  background-color: #ffffff;
+  margin: 10px 0;
+  max-height: 200px;
+  overflow-y: auto; /* Enable vertical scrolling */
+}
+
+#blockList li {
+  padding: 8px;
+  transition: background-color 0.3s ease;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+#blockList ul {
+  margin: 0;
+  padding: 0;
+}
+
+#blockList li:hover {
+  background-color: #e1ecf0;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.delete-icon {
+  cursor: pointer;
+  margin-left: 10px;
+  max-width: 20px;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+#blockList li:hover .delete-icon {
+  opacity: 1;
 }

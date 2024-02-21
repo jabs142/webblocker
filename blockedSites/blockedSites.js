@@ -21,6 +21,34 @@ document.addEventListener("DOMContentLoaded", function () {
       blockedSites.forEach(function (site) {
         const li = document.createElement("li");
         li.textContent = site;
+
+        // Create delete icon
+        const deleteIcon = document.createElement("img");
+        deleteIcon.src = "../images/cross.png";
+        deleteIcon.alt = "Delete button";
+        deleteIcon.title = "Remove site from blocked list";
+        deleteIcon.classList.add("delete-icon");
+
+        // Add click event listener to the delete icon
+        deleteIcon.addEventListener("click", function () {
+          // Remove the corresponding site from the blockedSites array
+          const indexToRemove = blockedSites.indexOf(site);
+          if (indexToRemove !== -1) {
+            blockedSites.splice(indexToRemove, 1);
+
+            // Update Chrome storage with the updated blockedSites array
+            chrome.storage.sync.set({ blockedSites });
+
+            // Refresh the blocked list
+            blockList.innerHTML = "";
+            document.dispatchEvent(new Event("DOMContentLoaded"));
+          }
+        });
+
+        // Append the delete icon to the list item
+        li.appendChild(deleteIcon);
+
+        // Append the list item to the unordered list
         ul.appendChild(li);
       });
 

@@ -68,26 +68,27 @@ document.addEventListener("DOMContentLoaded", function () {
           { active: true, currentWindow: true },
           function (tabs) {
             const activeTabURL = tabs[0].url;
+            const currentSite = extractDomain(activeTabURL);
 
             // Update the storage with the new blocked site
             chrome.storage.sync.get("blockedSites", function (data) {
               const blockedSites = data.blockedSites || [];
 
-              if (!blockedSites.includes(activeTabURL)) {
-                blockedSites.push(activeTabURL);
+              if (!blockedSites.includes(currentSite)) {
+                blockedSites.push(currentSite);
                 chrome.storage.sync.set(
-                  { blockedSites, activeTabURL },
+                  { blockedSites, currentSite },
                   function () {
-                    console.log(`${activeTabURL} has been blocked.`);
+                    console.log(`${currentSite} has been blocked.`);
                     // Update site info after blocking
-                    updateSiteInfo(activeTabURL);
+                    updateSiteInfo(currentSite);
                   }
                 );
               } else {
-                console.log(`${activeTabURL} is already blocked.`);
+                console.log(`${currentSite} is already blocked.`);
               }
               // Update site info after blocking
-              updateSiteInfo(activeTabURL);
+              updateSiteInfo(currentSite);
             });
           }
         );
