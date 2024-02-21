@@ -101,7 +101,7 @@ function removeBlockingLogic() {
 }
 
 // TODO: Fix logic. Add recently blocked site into blockedSites array
-function updateBlockedSites(isBlocked) {
+function updateBlockedSites(isBlocked, blockedSites) {
   //   chrome.storage.sync.get("blockedSites", function (data) {
   //     const blockedSites = data.blockedSites || []; // If blockedSites is undefined, use an empty array
 
@@ -112,3 +112,12 @@ function updateBlockedSites(isBlocked) {
   }
   //   });
 }
+
+// Listens for communication between different components of the extension
+chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
+  if (request.blockMode !== undefined) {
+    const isBlocked = request.blockMode;
+    // Pass blockedSites to updateBlockedSites
+    updateBlockedSites(isBlocked, blockedSites);
+  }
+});
