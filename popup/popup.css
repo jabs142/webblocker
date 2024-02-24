@@ -76,7 +76,7 @@ hr {
   color: #495057;
 }
 
-#blockButton {
+#blockBtn {
   background-color: #e1ecf0;
   color: #495057;
   padding: 8px 16px;
@@ -84,6 +84,15 @@ hr {
   border: none;
   border-radius: 20px;
   cursor: pointer;
+}
+
+#blockBtn:hover {
+  background-color: #c8d4da;
+}
+
+#blockBtn:active {
+  background-color: #a3b1b8;
+  transform: scale(0.95);
 }
 
 #blockList {
@@ -95,7 +104,12 @@ hr {
   background-color: #ffffff;
   margin: 10px 0;
   max-height: 200px;
-  overflow-y: auto; /* Enable vertical scrolling */
+  overflow-y: auto;
+}
+
+#blockList li:hover {
+  background-color: #e1ecf0;
+  cursor: pointer;
 }
 
 #blockList li {
@@ -110,10 +124,6 @@ hr {
 #blockList ul {
   margin: 0;
   padding: 0;
-}
-
-#blockList li:hover {
-  background-color: #e1ecf0;
 }
 
 ul {
@@ -137,4 +147,8 @@ li {
 
 #blockList li:hover .delete-icon {
   opacity: 1;
+}
+
+#blockList:active .delete-icon {
+  transform: scale(0.95);
 }

@@ -19,10 +19,16 @@
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["scripts/content.js"]
+      "js": ["content.js"]
     }
   ],
-  "permissions": ["scripting", "activeTab", "storage"],
+  "permissions": [
+    "scripting",
+    "activeTab",
+    "storage",
+    "alarms",
+    "notifications"
+  ],
   "commands": {
     "_execute_action": {
       "suggested_key": {

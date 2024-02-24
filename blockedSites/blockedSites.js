@@ -1,11 +1,11 @@
 document.addEventListener("DOMContentLoaded", function () {
-  const blockListButton = document.getElementById("blockListBtn");
+  const blockListIcon = document.getElementById("blockListBtn");
   const blockList = document.getElementById("blockList");
   const toggleDarkModeBtn = document.getElementById("toggleModeBtn");
   let isDarkMode;
 
   // Clicking the blockList button redirects back to the home page
-  blockListButton.addEventListener("click", function () {
+  blockListIcon.addEventListener("click", function () {
     window.location.href = "../popup/popup.html";
   });
 
@@ -44,7 +44,7 @@ document.addEventListener("DOMContentLoaded", function () {
       blockedSites.forEach(function (site) {
         const li = document.createElement("li");
         li.textContent = site;
-        li.style.color = isDarkMode ? "gray" : "";
+        li.style.color = "gray";
 
         const deleteIcon = document.createElement("img");
         deleteIcon.src = "../images/cross.png";
@@ -56,11 +56,7 @@ document.addEventListener("DOMContentLoaded", function () {
           const indexToRemove = blockedSites.indexOf(site);
           if (indexToRemove !== -1) {
             blockedSites.splice(indexToRemove, 1);
-
-            // Update Chrome storage with the updated blockedSites array
             chrome.storage.sync.set({ blockedSites });
-
-            // Refresh the blocked list
             updateBlockedSitesList();
           }
         });
@@ -73,7 +69,6 @@ document.addEventListener("DOMContentLoaded", function () {
       blockList.innerHTML = "";
       blockList.appendChild(ul);
     } else {
-      // If there are no blocked sites, display a message
       blockList.innerHTML =
         "<p style='color: grey'>No sites are currently blocked.</p>";
     }
