@@ -18,7 +18,7 @@ document.addEventListener("DOMContentLoaded", function () {
   chrome.storage.sync.get(
     ["blockMode", "currentSite", "darkMode"],
     function (data) {
-      let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
+      let isBlocked = data.blockMode !== undefined ? data.blockMode : false;
       let isDarkMode = data.darkMode !== undefined ? data.darkMode : false;
 
       updateButtonText(isBlocked);
