@@ -50,38 +50,38 @@ function checkAndInjectContentScript() {
     .then(([tabId, currentSite]) => {
       console.log("checkAndInjectContentScript tabId", tabId);
       console.log("checkAndInjectContentScript currentSite", currentSite);
-      if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
-        chrome.storage.sync.get(["blockMode", "blockedSites"], function (data) {
-          let blockedSites = data.blockedSites || [];
-          let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
-          console.log("checkAndInjectContentScript isBlocked?", isBlocked);
-          const currentSiteDomain = extractDomain(currentSite);
-          console.log(
-            "checkAndInjectContentScript currentSiteDomain",
-            currentSiteDomain
-          );
+      // if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
+      chrome.storage.sync.get(["blockMode", "blockedSites"], function (data) {
+        let blockedSites = data.blockedSites || [];
+        let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
+        console.log("checkAndInjectContentScript isBlocked?", isBlocked);
+        const currentSiteDomain = extractDomain(currentSite);
+        console.log(
+          "checkAndInjectContentScript currentSiteDomain",
+          currentSiteDomain
+        );
 
-          // Check if the current site is in the list of blocked sites
-          if (
-            currentSiteDomain &&
-            !currentSiteDomain.startsWith("chrome://") &&
-            blockedSites.includes(currentSiteDomain) &&
-            isBlocked
-          ) {
-            // If the current site is in the list of blocked sites, inject content.js script
-            console.log(
-              "Passed blockedSites.includes(currentSiteDomain) && isBlocked"
-            );
-            chrome.scripting
-              .executeScript({
-                target: { tabId: tabId },
-                files: ["content.js"],
-                injectImmediately: true,
-              })
-              .then(() => console.log("content.js script injected"));
-          }
-        });
-      }
+        // Check if the current site is in the list of blocked sites
+        if (
+          currentSiteDomain &&
+          // !currentSiteDomain.startsWith("chrome://") &&
+          blockedSites.includes(currentSiteDomain) &&
+          isBlocked
+        ) {
+          // If the current site is in the list of blocked sites, inject content.js script
+          console.log(
+            "Passed blockedSites.includes(currentSiteDomain) && isBlocked"
+          );
+          chrome.scripting
+            .executeScript({
+              target: { tabId: tabId },
+              files: ["content.js"],
+              injectImmediately: true,
+            })
+            .then(() => console.log("content.js script injected"));
+        }
+      });
+      // }
     })
     .catch((error) => console.error("Error in Promise.all:", error));
 }
