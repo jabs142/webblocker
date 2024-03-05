@@ -20,7 +20,34 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
           console.log("currentSite", currentSite);
 
           if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
-            checkAndInjectContentScript();
+            chrome.storage.sync.get(
+              ["blockMode", "blockedSites"],
+              function (data) {
+                let blockedSites = data.blockedSites || [];
+                let isBlocked =
+                  data.blockMode !== undefined ? data.blockMode : true;
+                console.log("isBlocked?", isBlocked);
+                const currentSiteDomain = extractDomain(currentSite);
+                console.log("currentSiteDomain?", currentSiteDomain);
+
+                // Check if the current site is in the list of blocked sites
+                if (
+                  currentSiteDomain &&
+                  blockedSites.includes(currentSiteDomain) &&
+                  isBlocked
+                ) {
+                  // If the current site is in the list of blocked sites, inject content.js script
+                  console.log("should inject");
+                  injectContentScript();
+                } else if (
+                  currentSiteDomain &&
+                  (!blockedSites.includes(currentSiteDomain) || !isBlocked)
+                ) {
+                  console.log("should remove");
+                  removeContentScript();
+                }
+              }
+            );
           }
         })
         .catch((error) => console.error("Error in Promise.all:", error));
@@ -48,6 +75,36 @@ function getCurrentSite() {
       resolve(tab ? tab.url : null);
     });
   });
+}
+
+function injectContentScript() {
+  Promise.all([getTabId()])
+    .then(([tabId]) => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        files: ["content.js"],
+        injectImmediately: true,
+      });
+    })
+    .catch((error) => console.error("Error in Promise.all:", error));
+}
+
+function removeContentScript() {
+  Promise.all([getTabId()])
+    .then(([tabId]) => {
+      chrome.scripting.executeScript({
+        target: { tabId: tabId },
+        function: () => {
+          const blockingHtml = document.querySelector("[data-blocking-html]");
+          if (blockingHtml) {
+            blockingHtml.remove();
+            console.log("Content.js script removed");
+          }
+          window.location.reload();
+        },
+      });
+    })
+    .catch((error) => console.error("Error in Promise.all:", error));
 }
 
 // Function to check if the current site is blocked and inject content.js script
