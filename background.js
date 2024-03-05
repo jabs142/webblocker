@@ -1,24 +1,30 @@
 // Listens for changes to the storage and triggers a callback when data is updated
 chrome.storage.onChanged.addListener(function (changes, namespace) {
   console.log("chrome.storage.onChanged event triggered");
-  if (namespace === "sync" && "blockedSites" in changes) {
-    console.log(
-      "Blocked sites have been updated:",
-      changes.blockedSites.newValue
-    );
+  if (namespace === "sync") {
+    if ("blockMode" in changes || "blockedSites" in changes) {
+      console.log(
+        "Blocked sites have been updated:",
+        changes.blockedSites ? changes.blockedSites.newValue : "not changed"
+      );
+      console.log(
+        "BlockMode",
+        changes.blockMode ? changes.blockMode.newValue : "not changed"
+      );
 
-    // Check and inject content.js script after promise resolution
-    Promise.all([getTabId(), getCurrentSite()])
-      .then(([tabId, currentSite]) => {
-        console.log("Promise.all resolved");
-        console.log("tabId", tabId);
-        console.log("currentSite", currentSite);
+      // Check and inject content.js script after promise resolution
+      Promise.all([getTabId(), getCurrentSite()])
+        .then(([tabId, currentSite]) => {
+          console.log("Promise.all resolved");
+          console.log("tabId", tabId);
+          console.log("currentSite", currentSite);
 
-        if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
-          checkAndInjectContentScript();
-        }
-      })
-      .catch((error) => console.error("Error in Promise.all:", error));
+          if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
+            checkAndInjectContentScript();
+          }
+        })
+        .catch((error) => console.error("Error in Promise.all:", error));
+    }
   }
 });
 
