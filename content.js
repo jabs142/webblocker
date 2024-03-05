@@ -1,4 +1,4 @@
-console.log("Content.js injected!");
+console.log("This is content.js!");
 
 // const generateHTML = (pageName) => {
 //   const tempUrl = new URL(`http://${pageName}`);

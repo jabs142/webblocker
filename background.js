@@ -1,19 +1,24 @@
-console.log("background.js");
-
 // Listens for changes to the storage and triggers a callback when data is updated
 chrome.storage.onChanged.addListener(function (changes, namespace) {
   console.log("chrome.storage.onChanged event triggered");
   if (namespace === "sync" && "blockedSites" in changes) {
-    // The 'blockedSites' key in sync storage has changed
     console.log(
       "Blocked sites have been updated:",
       changes.blockedSites.newValue
     );
 
-    // Check and inject content.js script after a delay
-    setTimeout(() => {
-      checkAndInjectContentScript();
-    }, 1000); // Adjust the delay as needed
+    // Check and inject content.js script after promise resolution
+    Promise.all([getTabId(), getCurrentSite()])
+      .then(([tabId, currentSite]) => {
+        console.log("Promise.all resolved");
+        console.log("tabId", tabId);
+        console.log("currentSite", currentSite);
+
+        if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
+          checkAndInjectContentScript();
+        }
+      })
+      .catch((error) => console.error("Error in Promise.all:", error));
   }
 });
 
@@ -28,7 +33,6 @@ function getTabId() {
   });
 }
 
-// TODO: Read and edit: https://developer.chrome.com/docs/extensions/reference/api/tabs
 // Function to get the current site's URL
 function getCurrentSite() {
   return new Promise((resolve) => {
@@ -42,12 +46,8 @@ function getCurrentSite() {
 
 // Function to check if the current site is blocked and inject content.js script
 function checkAndInjectContentScript() {
-  console.log("checkAndInjectContentScript start");
-  // TODO: console.log above generates, but code below does not
-  // getCurrentSite and getTabId currently returning null
   Promise.all([getTabId(), getCurrentSite()])
     .then(([tabId, currentSite]) => {
-      console.log("checkAndInjectContentScript Promise resolved");
       console.log("checkAndInjectContentScript tabId", tabId);
       console.log("checkAndInjectContentScript currentSite", currentSite);
       if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
@@ -76,6 +76,7 @@ function checkAndInjectContentScript() {
               .executeScript({
                 target: { tabId: tabId },
                 files: ["content.js"],
+                injectImmediately: true,
               })
               .then(() => console.log("content.js script injected"));
           }
@@ -90,7 +91,6 @@ function extractDomain(url) {
   return hostname.replace(/^www\./, "").replace(/\.com$/, "");
 }
 
-// Check and inject content.js script on initial setup
 checkAndInjectContentScript();
 
 // // TODO: Fix alarm. Current alarm doesn't appear to be showing
