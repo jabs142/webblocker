@@ -1,4 +1,16 @@
-// Listens for changes to the storage and triggers a callback when data is updated
+// Listens for new/ updated tabs
+chrome.tabs.onUpdated.addListener(function onUpdatedListener(
+  tabId,
+  changeInfo
+) {
+  // Check if the tab has finished loading
+  if (changeInfo.status === "complete") {
+    console.log("new tab, should inject");
+    checkAndInject();
+  }
+});
+
+// Listens for changes to the storage
 chrome.storage.onChanged.addListener(function (changes, namespace) {
   if (namespace === "sync") {
     if ("blockMode" in changes || "blockedSites" in changes) {
@@ -11,94 +23,22 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
         changes.blockMode ? changes.blockMode.newValue : "not changed"
       );
 
-      // Check and inject content.js script after promise resolution
-      Promise.all([getTabId(), getCurrentSite()])
-        .then(([tabId, currentSite]) => {
-          if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
-            chrome.storage.sync.get(
-              ["blockMode", "blockedSites"],
-              function (data) {
-                let blockedSites = data.blockedSites || [];
-                let isBlocked =
-                  data.blockMode !== undefined ? data.blockMode : true;
-                const currentSiteDomain = extractDomain(currentSite);
-
-                if (
-                  currentSiteDomain &&
-                  blockedSites.includes(currentSiteDomain) &&
-                  isBlocked
-                ) {
-                  console.log("should inject");
-                  injectContentScript();
-                } else if (
-                  currentSiteDomain &&
-                  ((!blockedSites.includes(currentSiteDomain) && isBlocked) ||
-                    (blockedSites.includes(currentSiteDomain) && !isBlocked))
-                ) {
-                  console.log("should remove");
-                  removeContentScript();
-                }
-              }
-            );
-          }
-        })
-        .catch((error) => console.error("Error in Promise.all:", error));
+      checkAndInject();
     }
   }
 });
 
-function getTabId() {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      console.log("getTabID ran", tab);
-      resolve(tab ? tab.id : null);
-    });
-  });
-}
+function checkAndInject() {
+  // Check and inject content.js script after promise resolution
+  chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+    const tab = tabs[0];
+    console.log("tabs", tabs[0]);
+    const currentSite = tab.url;
+    const tabId = tab.id;
+    console.log("currentSite", currentSite);
+    console.log("tabId", tabId);
 
-function getCurrentSite() {
-  return new Promise((resolve) => {
-    chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
-      const tab = tabs[0];
-      console.log("currentSite ran", tab);
-      resolve(tab ? tab.url : null);
-    });
-  });
-}
-
-function injectContentScript() {
-  Promise.all([getTabId()])
-    .then(([tabId]) => {
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        files: ["content.js"],
-        injectImmediately: true,
-      });
-    })
-    .catch((error) => console.error("Error in Promise.all:", error));
-}
-
-function removeContentScript() {
-  Promise.all([getTabId()])
-    .then(([tabId]) => {
-      chrome.scripting.executeScript({
-        target: { tabId: tabId },
-        function: () => {
-          const blockingHtml = document.querySelector("[data-blocking-html]");
-          if (blockingHtml) {
-            blockingHtml.remove();
-          }
-          window.location.reload();
-        },
-      });
-    })
-    .catch((error) => console.error("Error in Promise.all:", error));
-}
-
-function checkAndInjectContentScript() {
-  Promise.all([getTabId(), getCurrentSite()])
-    .then(([tabId, currentSite]) => {
+    if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
       chrome.storage.sync.get(["blockMode", "blockedSites"], function (data) {
         let blockedSites = data.blockedSites || [];
         let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
@@ -109,18 +49,33 @@ function checkAndInjectContentScript() {
           blockedSites.includes(currentSiteDomain) &&
           isBlocked
         ) {
-          chrome.scripting
-            .executeScript({
-              target: { tabId: tabId },
-              files: ["content.js"],
-              injectImmediately: true,
-            })
-            .then(() => console.log("content.js script injected"));
+          console.log("should inject");
+          injectContentScript(tabId);
+        } else if (
+          currentSiteDomain &&
+          ((!blockedSites.includes(currentSiteDomain) && isBlocked) ||
+            (blockedSites.includes(currentSiteDomain) && !isBlocked))
+        ) {
+          console.log("should remove");
+          removeContentScript(tabId);
         }
       });
-      // }
-    })
-    .catch((error) => console.error("Error in Promise.all:", error));
+    }
+  });
+}
+
+function injectContentScript(tabId) {
+  chrome.scripting.insertCSS({
+    target: { tabId: tabId },
+    files: ["content.css"],
+  });
+}
+
+function removeContentScript(tabId) {
+  chrome.scripting.removeCSS({
+    target: { tabId: tabId },
+    files: ["content.css"],
+  });
 }
 
 function extractDomain(url) {
@@ -128,7 +83,82 @@ function extractDomain(url) {
   return hostname.replace(/^www\./, "").replace(/\.com$/, "");
 }
 
-checkAndInjectContentScript();
+// function getTabId() {
+//   return new Promise((resolve) => {
+//     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+//       const tab = tabs[0];
+//       console.log("getTabID ran", tab);
+//       resolve(tab ? tab.id : null);
+//     });
+//   });
+// }
+
+// function getCurrentSite() {
+//   return new Promise((resolve) => {
+//     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
+//       const tab = tabs[0];
+//       console.log("currentSite ran", tab);
+//       resolve(tab ? tab.url : null);
+//     });
+//   });
+// }
+
+// function injectContentScript() {
+//   Promise.all([getTabId()])
+//     .then(([tabId]) => {
+//       chrome.scripting.executeScript({
+//         target: { tabId: tabId },
+//         files: ["content.js"],
+//         injectImmediately: true,
+//       });
+//     })
+//     .catch((error) => console.error("Error in Promise.all:", error));
+// }
+
+// function removeContentScript() {
+//   Promise.all([getTabId()])
+//     .then(([tabId]) => {
+//       chrome.scripting.executeScript({
+//         target: { tabId: tabId },
+//         function: () => {
+//           const blockingHtml = document.querySelector("[data-blocking-html]");
+//           if (blockingHtml) {
+//             blockingHtml.remove();
+//           }
+//           window.location.reload();
+//         },
+//       });
+//     })
+//     .catch((error) => console.error("Error in Promise.all:", error));
+// }
+
+// function checkAndInjectContentScript() {
+//   Promise.all([getTabId(), getCurrentSite()])
+//     .then(([tabId, currentSite]) => {
+//       chrome.storage.sync.get(["blockMode", "blockedSites"], function (data) {
+//         let blockedSites = data.blockedSites || [];
+//         let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
+//         const currentSiteDomain = extractDomain(currentSite);
+
+//         if (
+//           currentSiteDomain &&
+//           blockedSites.includes(currentSiteDomain) &&
+//           isBlocked
+//         ) {
+//           chrome.scripting
+//             .insertCSS({
+//               target: { tabId: tabId },
+//               files: ["content.css"],
+//             })
+//             .then(() => console.log("content.js script injected"));
+//         }
+//       });
+//       // }
+//     })
+//     .catch((error) => console.error("Error in Promise.all:", error));
+// }
+
+// checkAndInjectContentScript();
 
 // // TODO: Fix alarm. Current alarm doesn't appear to be showing
 // chrome.alarms.onAlarm.addListener(() => {
