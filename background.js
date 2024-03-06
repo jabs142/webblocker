@@ -41,7 +41,8 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                   injectContentScript();
                 } else if (
                   currentSiteDomain &&
-                  (!blockedSites.includes(currentSiteDomain) || !isBlocked)
+                  ((!blockedSites.includes(currentSiteDomain) && isBlocked) ||
+                    (blockedSites.includes(currentSiteDomain) && !isBlocked))
                 ) {
                   console.log("should remove");
                   removeContentScript();
