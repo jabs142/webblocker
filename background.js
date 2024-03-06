@@ -1,6 +1,5 @@
 // Listens for changes to the storage and triggers a callback when data is updated
 chrome.storage.onChanged.addListener(function (changes, namespace) {
-  console.log("chrome.storage.onChanged event triggered");
   if (namespace === "sync") {
     if ("blockMode" in changes || "blockedSites" in changes) {
       console.log(
@@ -15,10 +14,6 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
       // Check and inject content.js script after promise resolution
       Promise.all([getTabId(), getCurrentSite()])
         .then(([tabId, currentSite]) => {
-          console.log("Promise.all resolved");
-          console.log("tabId", tabId);
-          console.log("currentSite", currentSite);
-
           if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
             chrome.storage.sync.get(
               ["blockMode", "blockedSites"],
@@ -26,17 +21,13 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
                 let blockedSites = data.blockedSites || [];
                 let isBlocked =
                   data.blockMode !== undefined ? data.blockMode : true;
-                console.log("isBlocked?", isBlocked);
                 const currentSiteDomain = extractDomain(currentSite);
-                console.log("currentSiteDomain?", currentSiteDomain);
 
-                // Check if the current site is in the list of blocked sites
                 if (
                   currentSiteDomain &&
                   blockedSites.includes(currentSiteDomain) &&
                   isBlocked
                 ) {
-                  // If the current site is in the list of blocked sites, inject content.js script
                   console.log("should inject");
                   injectContentScript();
                 } else if (
@@ -56,7 +47,6 @@ chrome.storage.onChanged.addListener(function (changes, namespace) {
   }
 });
 
-// Function to get the ID of the current tab
 function getTabId() {
   return new Promise((resolve) => {
     chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
@@ -67,7 +57,6 @@ function getTabId() {
   });
 }
 
-// Function to get the current site's URL
 function getCurrentSite() {
   return new Promise((resolve) => {
     chrome.tabs.query({ active: true, lastFocusedWindow: true }, (tabs) => {
@@ -99,7 +88,6 @@ function removeContentScript() {
           const blockingHtml = document.querySelector("[data-blocking-html]");
           if (blockingHtml) {
             blockingHtml.remove();
-            console.log("Content.js script removed");
           }
           window.location.reload();
         },
@@ -108,34 +96,19 @@ function removeContentScript() {
     .catch((error) => console.error("Error in Promise.all:", error));
 }
 
-// Function to check if the current site is blocked and inject content.js script
 function checkAndInjectContentScript() {
   Promise.all([getTabId(), getCurrentSite()])
     .then(([tabId, currentSite]) => {
-      console.log("checkAndInjectContentScript tabId", tabId);
-      console.log("checkAndInjectContentScript currentSite", currentSite);
-      // if (tabId && currentSite && !currentSite.startsWith("chrome://")) {
       chrome.storage.sync.get(["blockMode", "blockedSites"], function (data) {
         let blockedSites = data.blockedSites || [];
         let isBlocked = data.blockMode !== undefined ? data.blockMode : true;
-        console.log("checkAndInjectContentScript isBlocked?", isBlocked);
         const currentSiteDomain = extractDomain(currentSite);
-        console.log(
-          "checkAndInjectContentScript currentSiteDomain",
-          currentSiteDomain
-        );
 
-        // Check if the current site is in the list of blocked sites
         if (
           currentSiteDomain &&
-          // !currentSiteDomain.startsWith("chrome://") &&
           blockedSites.includes(currentSiteDomain) &&
           isBlocked
         ) {
-          // If the current site is in the list of blocked sites, inject content.js script
-          console.log(
-            "Passed blockedSites.includes(currentSiteDomain) && isBlocked"
-          );
           chrome.scripting
             .executeScript({
               target: { tabId: tabId },

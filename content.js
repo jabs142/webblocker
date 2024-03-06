@@ -1,5 +1,3 @@
-console.log("This is content.js!");
-
 // Function declaration for generateHTML
 function generateHTML(pageName) {
   const tempUrl = new URL(`http://${pageName}`);
@@ -23,11 +21,10 @@ function generateHTML(pageName) {
 function applyBlockingLogic() {
   // Check if blocking HTML is already injected
   if (document.querySelector("[data-blocking-html]")) {
-    console.log("Blocking HTML already injected.");
     return;
   }
 
-  const currentHostname = window.location.hostname; // Extracting hostname from the current URL
+  const currentHostname = window.location.hostname;
 
   const existingStyle = document.querySelector("[data-blocking-styles]");
   if (!existingStyle) {
@@ -36,8 +33,8 @@ function applyBlockingLogic() {
 
     style.innerHTML = `
     body {
-      overflow: hidden; /* Prevent scrolling */
-      position: fixed; /* Fixed position to cover the entire page */
+      overflow: hidden;
+      position: fixed;
       top: 0;
       left: 0;
       width: 100%;
@@ -79,22 +76,3 @@ function applyBlockingLogic() {
 }
 
 applyBlockingLogic();
-
-// chrome.runtime.onMessage.addListener(function (request, sender, sendResponse) {
-//   if (request.action === "blockSite") {
-//     const blockedMessage = document.createElement("div");
-//     blockedMessage.innerHTML = "<p>This site is blocked during focus time.</p>";
-//     blockedMessage.style.position = "fixed";
-//     blockedMessage.style.top = "50%";
-//     blockedMessage.style.left = "50%";
-//     blockedMessage.style.transform = "translate(-50%, -50%)";
-//     blockedMessage.style.backgroundColor = "#fff";
-//     blockedMessage.style.padding = "20px";
-//     blockedMessage.style.border = "2px solid #000";
-//     blockedMessage.style.zIndex = "9999";
-//     document.body.appendChild(blockedMessage);
-
-//     // Send a response to acknowledge that the message was received
-//     sendResponse({ received: true });
-//   }
-// });

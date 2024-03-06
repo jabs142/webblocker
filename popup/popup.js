@@ -1,5 +1,3 @@
-console.log("Popup.js is running");
-
 document.addEventListener("DOMContentLoaded", function () {
   const siteInfo = document.getElementById("siteInfo");
   const focusBtn = document.getElementById("focusBtn");
