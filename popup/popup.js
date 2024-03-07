@@ -6,12 +6,10 @@ document.addEventListener("DOMContentLoaded", function () {
   const themeIcon = document.getElementById("themeIcon");
   const blockListIcon = document.getElementById("blockListBtn");
 
-  // Clicking the blockList button redirects to the blocked list page
   blockListIcon.addEventListener("click", function () {
     window.location.href = "../blockedSites/blockedSites.html";
   });
 
-  // Retrieve the current mode, theme mode and list of blocked sites from Chrome storage
   chrome.storage.sync.get(
     ["blockMode", "currentSite", "darkMode"],
     function (data) {
@@ -92,52 +90,3 @@ document.addEventListener("DOMContentLoaded", function () {
     }
   }
 });
-
-// function setAlarm(event) {
-//   let minutes = parseFloat(event.target.value);
-//   let secondsRemaining = minutes * 60;
-
-//   chrome.alarms.create({ delayInMinutes: minutes });
-//   chrome.storage.sync.set({ minutes: minutes });
-
-//   // Update badge text with countdown timer
-//   updateBadgeText(secondsRemaining);
-
-//   // Start updating badge text every second
-//   let intervalId = setInterval(function () {
-//     secondsRemaining--;
-//     updateBadgeText(secondsRemaining);
-
-//     // Clear the interval when countdown reaches 0
-//     if (secondsRemaining <= 0) {
-//       clearInterval(intervalId);
-//       chrome.action.setBadgeText({ text: "" });
-//     }
-//   }, 1000);
-
-//   window.close();
-// }
-
-// function updateBadgeText(secondsRemaining) {
-//   let minutes = Math.floor(secondsRemaining / 60);
-//   let seconds = secondsRemaining % 60;
-
-//   // Format minutes and seconds with leading zeros
-//   let formattedMinutes = minutes.toString().padStart(2, "0");
-//   let formattedSeconds = seconds.toString().padStart(2, "0");
-
-//   let badgeText = `${formattedMinutes}.${formattedSeconds}`;
-
-//   chrome.action.setBadgeText({ text: badgeText });
-// }
-
-// function clearAlarm() {
-//   chrome.action.setBadgeText({ text: "Done!" });
-//   chrome.alarms.clearAll();
-//   window.close();
-// }
-
-// // An Alarm delay of less than the minimum 1 minute will fire
-// // in approximately 1 minute increments if released
-// document.getElementById("sampleMinute").addEventListener("click", setAlarm);
-// document.getElementById("cancelAlarm").addEventListener("click", clearAlarm);

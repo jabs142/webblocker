@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "BlockBuddy",
   "version": "0.1.2",
-  "description": "Website blocker and pomodoro timer for enhancing focus",
+  "description": "Website blocker",
   "icons": {
     "16": "images/icon16.png",
     "32": "images/icon32.png",
